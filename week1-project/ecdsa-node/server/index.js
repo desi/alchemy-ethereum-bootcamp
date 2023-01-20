@@ -41,4 +41,7 @@ function setInitialBalance(address) {
   if (!balances[address]) {
     balances[address] = 0;
   }
+  return balances[address];
 }
+
+module.exports = { app, balances, setInitialBalance}
