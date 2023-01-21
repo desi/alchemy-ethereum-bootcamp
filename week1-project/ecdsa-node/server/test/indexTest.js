@@ -21,22 +21,29 @@ describe('App Test', () => {
   });
 
   it('get balance for address', (done) => {
-    chai.request(server).get('/balance/0x3').end((err, res) => {
+    let zahra = app.actor_key_pairs['zahra']
+    chai.request(server).get(`/balance/${zahra.public_key}`).end((err, res) => {
       res.should.have.status(200);
-      res.body.balance.should.be.eq(75);
+      res.body.balance.should.be.eq(100);
       done();
     });
   });
 
   it('should transfer funds from sender to receiver', (done) => {
+    let kate = app.actor_key_pairs['kate']
+    let constance = app.actor_key_pairs['constance']
     chai.request(server)
       .post('/send')
-      .send({sender: "0x3", amount: 10, recipient: "0x2"})
+      .send({sender: kate.public_key, amount: 10, recipient: constance.public_key})
       .end((err, res) => {
         res.should.have.status(200);
-        res.body.balance.should.be.eq(65);
+        res.body.balance.should.be.eq(40);
         done();
       });
+  });
+
+  it('should generate actor keypairs', () => {
+    expect(app.generateKeyPairs()['zahra'].public_key).to.not.equal(null)
   });
 
 });
