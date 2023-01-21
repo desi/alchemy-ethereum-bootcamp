@@ -29,8 +29,15 @@ console.log(JSON.stringify(actor_key_pairs));
 actors.forEach((actor, index) => {
   balances[actor_key_pairs[actor].public_key] = Math.trunc((100/(index + 1)));
 })
-console.log(JSON.stringify(balances));
 
+async function signMessage(msg, privateKey) {
+  [signature, rb] = await secp.sign(msg, privateKey, { recovered: true });
+  return [signature, rb]
+}
+
+async function recoverKey(message, signature, recoveryBit) {
+  return await secp.recoverPublicKey(hashMessage(message), signature, recoveryBit);
+}
 
 app.get("/balance/:address", (req, res) => {
   const { address } = req.params;
@@ -38,9 +45,14 @@ app.get("/balance/:address", (req, res) => {
   res.send({ balance });
 });
 
-app.post("/send", (req, res) => {
-  const { sender, recipient, amount } = req.body;
+app.post("/send", async (req, res) => {
+  const { sender, recipient, amount, senderSignature, rb } = req.body;
 
+  let publicKeyFromSenderSig = await recoverKey(amount, senderSignature, rb)
+  if (sender !== publicKeyFromSenderSig) {
+    res.status(400).send({ message: "Key and Signature don't match" });
+  }
+  
   setInitialBalance(sender);
   setInitialBalance(recipient);
 
@@ -64,4 +76,4 @@ function setInitialBalance(address) {
   return balances[address];
 }
 
-module.exports = { app, balances, setInitialBalance, generateKeyPairs, actor_key_pairs }
+module.exports = { app, balances, setInitialBalance, generateKeyPairs, actor_key_pairs, signMessage }

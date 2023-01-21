@@ -1,6 +1,8 @@
 let chai = require('chai');  
 let chaiHttp = require('chai-http');
+const { Signature } = require('ethereum-cryptography/secp256k1');
 chai.use(chaiHttp);
+const secp = require("ethereum-cryptography/secp256k1");
 
 let assert = chai.assert;    // Using Assert style
 let expect = chai.expect;    // Using Expect style
@@ -29,16 +31,51 @@ describe('App Test', () => {
     });
   });
 
-  it('should transfer funds from sender to receiver', (done) => {
+  it('should transfer funds from sender to receiver', async () => {
     let kate = app.actor_key_pairs['kate']
     let constance = app.actor_key_pairs['constance']
+    let katePrivateKey = app.actor_key_pairs['kate'].private_key
+    let response = await app.signMessage("10", katePrivateKey)
+    let [signature, rb] = response
+
     chai.request(server)
       .post('/send')
-      .send({sender: kate.public_key, amount: 10, recipient: constance.public_key})
+      .send({sender: kate.public_key, amount: 10, senderSignature: signature, recipient: constance.public_key, rb: rb})
       .end((err, res) => {
         res.should.have.status(200);
         res.body.balance.should.be.eq(40);
-        done();
+      });
+  });
+
+  it('should NOT transfer if the signature does not match', async () => {
+    let kate = app.actor_key_pairs['kate']
+    let constance = app.actor_key_pairs['constance']
+    let katePrivateKey = app.actor_key_pairs['kate'].private_key
+    let response = await app.signMessage("10", katePrivateKey)
+    let [signature, rb] = response
+
+    chai.request(server)
+      .post('/send')
+      .send({sender: kate.public_key, amount: 10, senderSignature: signature, recipient: constance.public_key, rb: rb})
+      .end((err, res) => {
+        res.should.have.status(400);
+        err.message.should.eq("Key and Signature don't match");
+      });
+  });
+
+  it('should NOT transfer if the amount makes the signature not match', async () => {
+    let kate = app.actor_key_pairs['kate']
+    let constance = app.actor_key_pairs['constance']
+    let katePrivateKey = app.actor_key_pairs['kate'].private_key
+    let response = await app.signMessage("20", katePrivateKey)
+    let [signature, rb] = response
+
+    chai.request(server)
+      .post('/send')
+      .send({sender: kate.public_key, amount: 10, senderSignature: signature, recipient: constance.public_key, rb: rb})
+      .end((err, res) => {
+        res.should.have.status(400);
+        err.message.should.eq("Key and Signature don't match");
       });
   });
 
