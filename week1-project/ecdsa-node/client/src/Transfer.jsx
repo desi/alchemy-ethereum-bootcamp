@@ -1,11 +1,16 @@
-import { useState } from "react";
-import server from "./server";
+/* eslint-disable react/jsx-closing-tag-location */
+/* eslint-disable react/self-closing-comp */
+/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable no-alert */
+import { useState } from 'react';
+import server from './server';
 
 function Transfer({ address, setBalance }) {
-  const [sendAmount, setSendAmount] = useState("");
-  const [recipient, setRecipient] = useState("");
-  const [signature, setSignature] = useState("");
-  const [rb, setRecoveryBit] = useState("");
+  const [sendAmount, setSendAmount] = useState('');
+  const [recipient, setRecipient] = useState('');
+  const [signature, setSignature] = useState('');
+  const [rb, setRecoveryBit] = useState('');
 
   const setValue = (setter) => (evt) => setter(evt.target.value);
 
@@ -15,12 +20,12 @@ function Transfer({ address, setBalance }) {
     try {
       const {
         data: { balance },
-      } = await server.post(`send`, {
+      } = await server.post('send', {
         sender: address,
-        amount: parseInt(sendAmount),
-        signature: signature,
+        amount: parseInt(sendAmount, 10),
+        signature,
         recipient,
-        rb: rb,
+        rb,
       });
       setBalance(balance);
     } catch (ex) {
