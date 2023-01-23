@@ -12,7 +12,23 @@ https://www.loom.com/share/0d3c74890b8e44a5918c4cacb3f646c4
 ### Client
 
 The client folder contains a [react app](https://reactjs.org/) using [vite](https://vitejs.dev/). To get started, follow these steps:
+Project Description: The project was pretty open ended without any real requirements. However, it was clear the team wanted us to use what we had learned in the previous week to do "something interesting". The original project given to us had hard coded values for addresses with balances. The UI had a single field on the left for entering a wallet and getting a balance. The right side had two fields. One for entering the amount to transfer and one to enter the address to send to. The hardcoded addresses were simple ones like "Ox2". 
 
+What I did to make it more interesting:
+1. Instead of hard coding the addresses I moved them to being generated at the time of server start.
+2. I made each "person/wallet" have a private/public key pair.
+3. Additionally I moved to using the public key as the addresses.
+4. I updated the UI on the transfer side to require a signature and recovery bit rather than accepting a private key directly.
+5. I recovered the public address from the signature to make sure the amount and key matched the sender.
+
+Helper script:
+I additionally created a helper script to generate the signature for a given private key and amount. It is in /server/scripts and can be executed by calling typing the following at the command line:
+`node sign_a_message.js <MESSAGE> <PRIVATE_KEY>`
+
+Quick Demo:
+
+
+To Run the App:
 1. Open up a terminal in the `/client` folder
 2. Run `npm install` to install all the depedencies
 3. Run `npm run dev` to start the application 
