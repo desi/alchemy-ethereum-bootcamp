@@ -27,6 +27,8 @@ I additionally created a helper script to generate the signature for a given pri
 
 Quick Demo:
 
+https://user-images.githubusercontent.com/15041/214680746-def83f53-4e04-4a01-aa38-4c20e84950be.mov
+
 
 To Run the App:
 1. Open up a terminal in the `/client` folder
