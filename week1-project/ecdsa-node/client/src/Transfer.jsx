@@ -1,9 +1,16 @@
-import { useState } from "react";
-import server from "./server";
+/* eslint-disable react/jsx-closing-tag-location */
+/* eslint-disable react/self-closing-comp */
+/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable no-alert */
+import { useState } from 'react';
+import server from './server';
 
 function Transfer({ address, setBalance }) {
-  const [sendAmount, setSendAmount] = useState("");
-  const [recipient, setRecipient] = useState("");
+  const [sendAmount, setSendAmount] = useState('');
+  const [recipient, setRecipient] = useState('');
+  const [signature, setSignature] = useState('');
+  const [rb, setRecoveryBit] = useState('');
 
   const setValue = (setter) => (evt) => setter(evt.target.value);
 
@@ -13,10 +20,12 @@ function Transfer({ address, setBalance }) {
     try {
       const {
         data: { balance },
-      } = await server.post(`send`, {
+      } = await server.post('send', {
         sender: address,
-        amount: parseInt(sendAmount),
+        amount: parseInt(sendAmount, 10),
+        signature,
         recipient,
+        rb,
       });
       setBalance(balance);
     } catch (ex) {
@@ -38,7 +47,25 @@ function Transfer({ address, setBalance }) {
       </label>
 
       <label>
-        Recipient
+        Sender Signature
+        <input
+          placeholder="Please put in signature for sender signed amount + private key"
+          value={signature}
+          onChange={setValue(setSignature)}
+        ></input>
+      </label>
+
+      <label>
+        Recovery Bit
+        <input
+          placeholder="Please put recovery bit for sign"
+          value={rb}
+          onChange={setValue(setRecoveryBit)}
+        ></input>
+      </label>
+
+      <label>
+        Recipient Address
         <input
           placeholder="Type an address, for example: 0x2"
           value={recipient}

@@ -1,11 +1,13 @@
-import Wallet from "./Wallet";
-import Transfer from "./Transfer";
-import "./App.scss";
-import { useState } from "react";
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable import/order */
+import Wallet from './Wallet';
+import Transfer from './Transfer';
+import './App.scss';
+import { useState } from 'react';
 
 function App() {
   const [balance, setBalance] = useState(0);
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState('');
 
   return (
     <div className="app">
