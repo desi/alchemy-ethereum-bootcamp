@@ -12,7 +12,7 @@ describe('Game1', function () {
   it('should be a winner', async function () {
     // leave this as-is
     const { game } = await loadFixture(deployContractAndSetVariables);
-
+    await game.unlock();
     // you must call unlock before you can win
 
     // leave this call to game.win() as-is
