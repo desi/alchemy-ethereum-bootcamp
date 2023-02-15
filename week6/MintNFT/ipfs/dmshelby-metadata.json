@@ -1,0 +1,18 @@
+{
+  "attributes": [
+    {
+      "trait_type": "Beauty",
+      "value": "10" 
+  },
+  {
+      "trait_type": "Sleek",
+      "value": "100"
+  },
+  {
+      "trait_type": "Fast",
+      "value": "1000"
+  }],
+    "name": "DMShelby",
+    "image": "ipfs://QmcGTqhJ81mRscRexajYUJB1DLZz5bSRqveARp5oL46jFN/",
+    "description": "My fav car"
+}
